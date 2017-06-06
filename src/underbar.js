@@ -317,17 +317,17 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
-    var newArray = [];
+    var newArray = array.slice();
+    var finalArray = [];
     var randomLength = array.length;
-    for(var i = 0; i < array.length; i++) {
+    while(newArray.length > 0) {
       var randomIndex = Math.floor(Math.random()*randomLength);
-      newArray.push(array[randomIndex]);
-      array.splice(randomIndex,1);
+      finalArray.push(newArray[randomIndex]);
+      newArray.splice(randomIndex,1);
       randomLength--;
     }
-    return newArray;
+    return finalArray;
   };
-
 
   /**
    * ADVANCED
