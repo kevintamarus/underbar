@@ -239,22 +239,27 @@
   //   }, {
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
-  _.extend = function(obj, obj2) {
-    for(var key in obj2) {
-      obj[key]= obj2[key];
-    }
-    return obj;
+  _.extend = function(obj) {
+    for(var i = 1; i < arguments.length;i++){
+  		_.each(arguments[i],function(value,key){
+  			obj[key] = value;
+  		});
+  	}
+  	return obj;
   };
+  //I don't get why `arguments` pass but any other variable name will fail(saying I used native code)
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj, obj2) {
-    for(var key in obj2) {
-      if (!obj[key]) {
-      obj[key]= obj2[key];
-      }
-    }
-    return obj;
+    for(var i = 1; i < arguments.length;i++){
+  		_.each(arguments[i],function(value,key){
+        if (!obj.hasOwnProperty(key)) {
+          obj[key] = value;
+        }
+  		});
+  	}
+  	return obj;
   };
 
 
