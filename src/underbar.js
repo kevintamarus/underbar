@@ -155,14 +155,15 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
-    var startIndex = 0;
-    if(accumulator === undefined) {
-      accumulator = collection[0];
-      startIndex = 1;
-    } 
-    for(var i=startIndex; i<collection.length; i++) {
-      accumulator = iterator(accumulator, collection[i]);
-    }
+    var value = accumulator === undefined;
+    _.each(collection, function(i, collection) {
+      if (value === true) {
+        accumulator = i;
+        value = false;
+      } else {
+        accumulator = iterator(accumulator, i);
+      }
+    })
     return accumulator;
   };
 
@@ -181,44 +182,19 @@
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
-    var result = true;
-    if (iterator == undefined) {
-      for(var i=0; i<collection.length; i++) {
-        if(collection[i] !== true) {
-          result = false;
-        }
-      }
-    }
-    else {
-      for(var i=0; i<collection.length; i++) {
-        if(iterator(collection[i]) !== true) {
-          result = false;
-        }
-      }
-    }
-    return result;
+    iterator = iterator || _.identity;
+    return _.reduce(collection, function(x, i) {
+      return !!(iterator(i)) && x;
+    }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
-    var result = false;
-    if (iterator == undefined) {
-      iterator = collection[0];
-      for(var i=0; i<collection.length; i++) {
-        if(iterator(collection[i]) === true) {
-          result = true;
-        }
-      }
-    }
-    else {
-      for(var i=0; i<collection.length; i++) {
-        if(iterator(collection[i]) === true) {
-          result = true;
-        }
-      }
-    }
-    return result;
+    iterator = iterator || _.identity;
+    return !_.every(collection, function(i) {
+      return !iterator(i);
+    });
   };
 
 
