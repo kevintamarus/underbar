@@ -204,8 +204,9 @@
   _.some = function(collection, iterator) {
     var result = false;
     if (iterator == undefined) {
+      iterator = collection[0];
       for(var i=0; i<collection.length; i++) {
-        if(collection[i] === true) {
+        if(iterator(collection[i]) === true) {
           result = true;
         }
       }
@@ -303,12 +304,15 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
-    var result;
-    return function() {
-      if(func === result) {
-        return result;
+    var object = {};
+    var returnFunction = function() {
+      var argument = JSON.stringify(arguments);
+      if(object.hasOwnProperty(argument) === false) {
+        object[argument] = func.apply(this, arguments);
       }
+      return object[argument];
     }
+    return returnFunction;
   };
 
   // Delays a function for the given number of milliseconds, and then calls
@@ -318,6 +322,10 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    var argument = Array.prototype.slice.call(arguments, 2);
+    setTimeout(function() {
+      return func.apply(this,argument)
+    }, wait);
   };
 
 
